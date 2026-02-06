@@ -3,20 +3,6 @@
 
 local O = {}
 
--- OS detection
-O.os = {
-  is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1,
-  is_unix = vim.fn.has("unix") == 1,
-  is_mac = vim.fn.has("mac") == 1,
-}
-
--- Home path
-O.home = vim.fn.expand("~")
-
--- Leader keys (defined in settings.lua but also referenced here for plugins)
-O.leader_key = "<space>"
-O.local_leader_key = "<backspace>"
-
 -- Hint labels for hop/hint-based navigation
 -- Optimized for home row keys with frequency-based ordering
 O.hint_labels = "jklfdsahgnmervcxzbuioyptwq"
@@ -92,6 +78,49 @@ end
 if cc.line == nil then
   cc.line = "<leader>" .. c.line
 end
+
+O.surrounds = {
+  add = "ys", -- Add surrounding in Normal and Visual modes
+  vadd = "s", -- Add surrounding in Normal and Visual modes
+  delete = "ds", -- Delete surrounding
+  find = "]s", -- Find surrounding (to the right)
+  find_left = "[s", -- Find surrounding (to the left)
+  highlight = "<leader>vs", -- Highlight surrounding
+  replace = "cs", -- Replace surrounding
+  update_n_lines = "<leader>T<leader>n", -- Update `n_lines`
+}
+
+O.multi_leader_key = "_"
+O.goto_prefix = "<cr>"
+O.goto_next = "]"
+O.goto_previous = "["
+O.goto_next_outer = ")"
+O.goto_previous_outer = "("
+O.goto_next_end = "<leader>]" -- ")"
+O.goto_previous_end = "<leader>[" -- "("
+O.goto_next_outer_end = "<leader>)" -- "))"
+O.goto_previous_outer_end = "<leader>)" -- "(("
+O.select = "&"
+O.select_dynamic = "v"
+O.select_dynamic_around = "am"
+O.select_remote = "r"
+O.select_remote_dynamic = "m"
+O.select_outer = "<M-S-7>" -- M-&
+O.select_less = "<C-S-7>" -- C-&
+O.select_next = "in"
+O.select_previous = "iN"
+O.select_next_outer = "an"
+O.select_previous_outer = "aN"
+
+O.hover_key = "H"
+O.action_key = "K"
+O.action_key_vis = "K"
+-- TODO:?
+-- O.hover_key = "K"
+-- O.action_key = "co"
+-- O.action_key_vis = "C"
+
+O.quicksave = "<leader><leader>"
 
 -- Make the config table read-only to prevent accidental modifications
 return setmetatable(O, {
