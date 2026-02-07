@@ -1,17 +1,19 @@
 local outer_start = function()
   local c = vim.api.nvim_win_get_cursor(0)
-  vim.cmd "norm! [z"
+  vim.cmd("norm! [z")
   local nc = vim.api.nvim_win_get_cursor(0)
-  if c[1] == nc[1] and c[2] == nc[2] then vim.cmd "norm! zk[z" end
+  if c[1] == nc[1] and c[2] == nc[2] then
+    vim.cmd("norm! zk[z")
+  end
 end
 return {
   setup = function()
-    mappings.repeatable("z", "Fold", {
+    require("keymaps.jump_mode").repeatable("z", "Fold", {
       "<cmd>norm zj<cr>",
       "<cmd>norm zk<cr>",
     })
 
-    local hydra = require "hydra" {
+    local hydra = require("hydra")({
       name = "Folds",
       hint = "z, o, c, O, C",
       config = {
@@ -28,17 +30,23 @@ return {
         { "<ESC>", nil, { exit = true, nowait = true, desc = "exit" } },
         {
           "#",
-          function() vim.lsp.foldclose "comment" end,
+          function()
+            vim.lsp.foldclose("comment")
+          end,
           { desc = "Toggle Comments" },
         },
         {
           "i",
-          function() vim.lsp.foldclose "region" end,
+          function()
+            vim.lsp.foldclose("region")
+          end,
           { desc = "Toggle Inactive" },
         },
         {
           "I",
-          function() vim.lsp.foldclose "imports" end,
+          function()
+            vim.lsp.foldclose("imports")
+          end,
           { desc = "Toggle Imports" },
         },
         { "z", "za", { desc = "Toggle", nowait = true } },
@@ -58,7 +66,7 @@ return {
         { O.goto_next_outer, "[z", { desc = "Outer End" } },
         -- { "k", "<cmd>norm zk<cr>", { desc = "Prev" } },
         -- { "k", outer_start, { desc = "Prev", private = true } },
-        { O.goto_prev_outer, outer_start, { desc = "Outer Start" } },
+        { O.goto_previous_outer, outer_start, { desc = "Outer Start" } },
         { "m", "zm", { desc = "Close More" } },
         { "r", "zr", { desc = "Open More" } },
         { "M", "zM", { desc = "Close All" } },
@@ -81,7 +89,7 @@ return {
           end,
         },
       },
-    }
+    })
     require("keymaps.jump_mode").repeatable("z", "Folds", {
       "<cmd>norm zj<cr>",
       "<cmd>norm zk<cr>",

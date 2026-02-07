@@ -1,3 +1,4 @@
+-- TODO: cleanup and simplify, what do I actually want?
 local M = {}
 
 M.repeatable = function(ch, desc, fwdbwd, _opts)

@@ -13,6 +13,10 @@ K.set("n", "<leader><cr>", function()
   Snacks.picker.smart()
 end, { desc = "Smart Find Files" })
 K.set("n", ";", ":", { desc = "Quicker Cmdline" })
+K.set("n", ":", function()
+  -- TODO: this is weird
+  Snacks.picker.commands()
+end, { desc = "Cmd Palette" })
 map("n", "<c-c>", "<C-w>q", {})
 K.set("n", "<c-q>", "<C-w>q", { desc = "Close Window" })
 K.set("n", "<tab>", "<cmd>e #<cr>", { desc = "Other Buffer" })
@@ -22,6 +26,16 @@ map("n", "<leader>j", O.goto_next, { remap = true, desc = "Jump next (])" })
 map("n", "<leader>k", O.goto_previous, { remap = true, desc = "Jump prev ([)" })
 map("n", "<leader>J", O.goto_next_outer, { remap = true, desc = "Jump next outer (]])" })
 map("n", "<leader>K", O.goto_previous_outer, { remap = true, desc = "Jump prev outer ([[)" })
+-- Search textobject
+map("n", "y*", utils.operatorfunc_keys("*"), { desc = "Search (op)", expr = true })
+-- { '<leader>s"', '/<C-R>"<cr>', desc = "Last cdy" },
+-- { "<leader>s+", "/<C-R>+<cr>", desc = "Last clipboard" },
+-- { "<leader>s.", "/<C-R>.<cr>", desc = "Last insert" },
+map({ "n", "x" }, "<leader>*", LazyVim.pick("grep_word"), { desc = "Visual selection or word (Root Dir)" })
+
+map("n", "<leader>bs", function()
+  Snacks.picker.buffers()
+end, { desc = "Pick buffers" })
 
 map("x", "<M-p>", "pgv", { desc = "Paste and keep" })
 
@@ -68,9 +82,6 @@ local function dont_clobber_by_default(m, c)
     vim.schedule(orig)
   end)
 end
-
--- Search textobject
-map("n", "<leader>*", utils.operatorfunc_keys("*"), { desc = "Search (op)", expr = true })
 
 -- Continue the search and keep selecting (equivalent ish to doing `gn` in normal)
 -- TODO: select the current search match if not selected
@@ -143,16 +154,23 @@ map("i", "<M-r>", "<esc><M-r>", { remap = true, desc = "Rename after" })
 
 -- Select last pasted
 -- TODO: use yanky
-map("x", "<leader>vo", "`[o`]", { desc = "Select Last Paste/Op" })
-map("x", "<leader>vO", "V`[o`]", { desc = "SelLine Last Paste/Op" })
-map("x", "<leader>v<C-o>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
-map("n", "<leader>vo", "v`[o`]", { desc = "Select Last Paste/Op" })
-map("n", "<leader>vO", "V`[o`]", { desc = "SelLine Last Paste/Op" })
-map("n", "<leader>v<C-o>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
+map("x", "<leader>p", "`[o`]", { desc = "Select Last Paste/Op" })
+map("x", "<leader>P", "V`[o`]", { desc = "SelLine Last Paste/Op" })
+map("x", "<leader><C-p>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
+map("n", "<leader>p", "v`[o`]", { desc = "Select Last Paste/Op" })
+map("n", "<leader>P", "V`[o`]", { desc = "SelLine Last Paste/Op" })
+map("n", "<leader><C-p>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
 -- Use reselect as an operator
 K.op_from("<leader>p")
 K.op_from("<leader>P")
 K.op_from("<leader><C-p>")
+
+-- `v` as an operator
+-- map("n", "v", operatorfunc_keys "", { expr = true, desc = "v (op)" })
+-- map("n", "V", operatorfunc_Vkeys "", { expr = true, desc = "V (op)" })
+-- map("n", "<C-v>", operatorfunc_cvkeys "", { expr = true, desc = "<C-v> (op)" })
+-- -- TODO: make v[hjkl] more like normal
+-- Also needs an exception for remote mode
 
 map("n", "gv", "'<v'>", {})
 -- Reselect visual linewise
@@ -161,6 +179,11 @@ map("x", "gV", "<esc>gV", {})
 -- Reselect visual block wise
 map("n", "g<C-v>", "'<C-v>'>", {})
 map("x", "g<C-v>", "<esc>g<C-v>", {})
+
+-- Use reselect as an operator
+K.op_from("gv")
+K.op_from("gV")
+K.op_from("g<C-v>")
 
 map({ "n", "x", "o" }, "<c-e>", "ge", {})
 map({ "n", "x", "o" }, "<c-s-e>", "gE", {})
@@ -268,14 +291,12 @@ map("c", "<c-v>", function()
   return "i<bs>"
 end, { expr = true, desc = "Toggle visual range" })
 
-require("keymappings.scroll_mode").setup()
-require("keymappings.fold_mode").setup()
-
-map("n", "<leader>bs", function()
-  Snacks.picker.buffers()
-end, { desc = "Pick buffers" })
+require("keymaps.scroll_mode").setup()
+require("keymaps.fold_mode").setup()
 
 -- TODO: auto repeatable [] mappings
+map("n", "]c", "g;", { desc = "Newer Change" })
+map("n", "[c", "g,", { desc = "Older Change" })
 
 -- TODO: quickly run short commands
 -- local short_cmd = require("keymaps.short_cmd")

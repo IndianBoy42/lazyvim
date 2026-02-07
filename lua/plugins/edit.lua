@@ -140,6 +140,18 @@ return { -- mizlan/iswap.nvim
         { "x", exchange("visual"), mode = "x", desc = "Exchange" },
         -- { "<leader>X", exchange "cancel", mode = "n", desc = "Cancel Exchange" },
 
+        -- TODO: make it better
+        { '<leader>r"', ':%s/<C-R>"//g<Left><Left>', desc = "Last cdy" },
+        { "<leader>r+", ":%s/<C-R>+//g<Left><Left>", desc = "Last clipboard" },
+        { "<leader>r.", ":%s/<C-R>.//g<Left><Left>", desc = "Last insert" },
+        { "<leader>r/", ":%s/<C-R>///g<Left><Left>", desc = "Last search" },
+
+        { '<leader>r"', ':%s/<C-R>"//g<Left><Left>', desc = "Last cdy", mode = "x" },
+        { "<leader>r+", ":%s/<C-R>+//g<Left><Left>", desc = "Last clipboard", mode = "x" },
+        { "<leader>r.", ":%s/<C-R>.//g<Left><Left>", desc = "Last insert", mode = "x" },
+        { "<leader>r/", ":%s/<C-R>///g<Left><Left>", desc = "Last search", mode = "x" },
+        { "<leader>rs", ":s///g<Left><Left><Left>", desc = "In Selection", mode = "x" },
+
         -- TODO: fuck these, just use vim-visual-multi?
         {
           "<leader>rI",
@@ -161,6 +173,12 @@ return { -- mizlan/iswap.nvim
         },
         {
           "<leader>rO",
+          substitute_range("word", { range = "%" }),
+          mode = "n",
+          desc = "Replace all iw in file",
+        },
+        {
+          "r*",
           substitute_range("word", { range = "%" }),
           mode = "n",
           desc = "Replace all iw in file",
@@ -189,13 +207,14 @@ return { -- mizlan/iswap.nvim
   },
   {
     "johmsalas/text-case.nvim",
-    config = function()
-      -- Do NOT run setup, otherwise it creates default keybindings
-    end,
+    opts = {
+      default_keymappings_enabled = true,
+      prefix = "cu",
+    },
     keys = function()
       local k = {
         {
-          "cu",
+          "cu<space>",
           function()
             require("which-key").show({
               keys = "cu",
@@ -203,20 +222,31 @@ return { -- mizlan/iswap.nvim
             })
           end,
           desc = "Change case",
+          mode = { "n", "x", "o" },
         },
+        { "cu", mode = { "n", "x", "o" } },
+        -- { "cU", mode = { "n", "x", "o" } },
       }
       -- { "<leader>rc", desc = "Rename case", mode = { "x", "n" } },
       local function head(kc, mode, fn, desc)
+        local fn_s = fn
         if mode == "x" then
+          kc = "u" .. kc
           fn = function()
-            require("textcase").quick_replace(fn)
+            require("textcase").quick_replace(fn_s)
+          end
+        elseif mode == "o" then
+          kc = "cU" .. kc
+          fn = function()
+            require("textcase").operator(fn_s)
           end
         else
+          kc = "cu" .. kc
           fn = function()
-            require("textcase").visual(fn)
+            require("textcase").current_word(fn_s)
           end
         end
-        return { "cu" .. kc, mode = mode, fn, desc = desc }
+        return { kc, mode = mode, fn, desc = desc }
       end
       local heads = function(op)
         return {
@@ -233,8 +263,9 @@ return { -- mizlan/iswap.nvim
           head("m", op, "to_pascal_case", "PascalCase"),
         }
       end
-      vim.list_extend(k, heads("n"))
+      -- vim.list_extend(k, heads("n"))
       vim.list_extend(k, heads("x"))
+      -- vim.list_extend(k, heads("o"))
       return k
     end,
   },
@@ -341,7 +372,7 @@ return { -- mizlan/iswap.nvim
     -- end,
   },
   {
-    "nvim-mini/mini.operators",
+    "mini.operators",
     main = "mini.operators",
     opts = {
       -- Evaluate text and replace with output

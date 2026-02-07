@@ -43,28 +43,28 @@ return {
         end,
       },
       {
-        "<leader>rr*",
+        "<leader>r*",
         function()
           require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } })
         end,
         desc = "Last search",
       },
       {
-        "<leader>rr/",
+        "<leader>r/",
         function()
           require("grug-far").open({ prefills = { search = vim.fn.getreg("/") } })
         end,
         desc = "Last search",
       },
       {
-        "<leader>rr+",
+        "<leader>r+",
         function()
           require("grug-far").open({ prefills = { search = vim.fn.getreg("+") } })
         end,
         desc = "Last yank",
       },
       {
-        "<leader>rr.",
+        "<leader>r.",
         function()
           require("grug-far").open({ prefills = { search = vim.fn.getreg(".") } })
         end,
@@ -128,6 +128,7 @@ return {
   {
     "stevearc/quicker.nvim",
     -- TODO: winleavepre
+    event = "FileType qf",
     opts = {
       keys = {
         {

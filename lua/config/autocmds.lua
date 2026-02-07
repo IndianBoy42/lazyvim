@@ -86,3 +86,5 @@ augrp("cmdheight_fix", function(au)
     desc = "Keep cmdheight at 0",
   })
 end)
+
+require("config.autocmds.undim")

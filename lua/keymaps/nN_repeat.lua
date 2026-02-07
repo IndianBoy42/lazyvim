@@ -1,3 +1,5 @@
+-- TODO: this could use buffer local (or name spaced keymaps in the future)
+-- Unify with jump_mode
 local M = {}
 
 local custom_n_repeat = nil
@@ -27,7 +29,6 @@ function M.N_repeat()
     custom_N_repeat()
   end
 end
--- TODO: this could use buffer local (or name spaced keymaps in the future)
 function M.register(nN)
   nN = nN or { nil, nil }
   custom_n_repeat = nN[1]

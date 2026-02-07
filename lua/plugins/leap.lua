@@ -159,7 +159,7 @@ return {
           require("leap.remote").action()
         end,
         desc = "Leap Remote",
-        mode = { "o", "x" },
+        mode = { "n", "o", "x" },
       },
       { -- FIXME: treesitter doesn't trigger (leap thinks we're done too soon)
         O.select_remote_dynamic,

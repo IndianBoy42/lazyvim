@@ -14,8 +14,8 @@ return {
     opts = {
       commands = {
         Norm = { cmd = "norm" },
-        Glive = { cmd = "g" },
-        Dlive = { cmd = "d" },
+        G = { cmd = "g" },
+        D = { cmd = "d" },
       },
     },
     config = function(_, opts)

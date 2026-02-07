@@ -26,14 +26,21 @@ return {
   {
     "tzachar/highlight-undo.nvim",
     opts = {},
+    event = "VeryLazy",
   },
   {
     "Aasim-A/scrollEOF.nvim",
     opts = {},
+    event = "VeryLazy",
   },
   {
     "chrisgrieser/nvim-early-retirement",
     config = true,
     event = "VeryLazy",
+  },
+  {
+    "t-troebst/perfanno.nvim",
+    opts = {},
+    lazy = true,
   },
 }

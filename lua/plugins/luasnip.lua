@@ -27,12 +27,15 @@ local M = {
 
       map({ "i", "s" }, "<M-n>", "<Plug>luasnip-jump-next", { expr = true, silent = true })
       map({ "i", "s" }, "<M-p>", "<Plug>luasnip-jump-prev", { expr = true, silent = true })
+
       -- map("i", "<C-u>", require "luasnip.extras.select_choice", { silent = true })
+      -- TODO: require("plugins.snippets.luasnips_choices").config()
       -- map("i", "<M-n>", "<Plug>luasnip-next-choice", { silent = true })
       map({ "i", "s" }, "<M-j>", "<Plug>luasnip-next-choice", { silent = true })
       -- map("i", "<M-p>", "<Plug>luasnip-prev-choice", { silent = true })
       map({ "i", "s" }, "<M-k>", "<Plug>luasnip-prev-choice", { silent = true })
       -- map("i", "<C-y>", require("plugins.snippets.luasnips_choices").popup_close, { silent = true })
+
       if false then
         map("s", "n", "<Plug>luasnip-jump-next", { expr = true, silent = true })
         map("s", "p", "<Plug>luasnip-jump-prev", { expr = true, silent = true })
@@ -168,8 +171,6 @@ local M = {
         -- parser_nested_assembler = require "lv-luasnips.nested",
       })
 
-      -- TODO: require("plugins.snippets.luasnips_choices").config()
-
       -- friendly-snippets - enable standardized comments snippets
       require("luasnip").filetype_extend("typescript", { "tsdoc" })
       require("luasnip").filetype_extend("javascript", { "jsdoc" })
@@ -202,23 +203,6 @@ local M = {
         load_all()
       end, {})
     end,
-  },
-  {
-    "danymat/neogen",
-    cmd = "Neogen",
-    opts = {
-      enabled = true,
-      snippet_engine = "luasnip",
-    },
-  },
-  {
-    "LudoPinelli/comment-box.nvim",
-    -- TODO: configure this better
-    keys = {
-      { "<leader>nbl", "<cmd>CBlbox<r>", desc = "Left Box" },
-      { "<leader>nbc", "<cmd>CBcbox<r>", desc = "Center Box" },
-    },
-    opts = {},
   },
   -- TODO: https://github.com/chrisgrieser/nvim-scissors
 }

@@ -59,7 +59,7 @@ M.init = function()
       end, {})
     end
   end
-  vim.api.nvim_create_user_command("WP", cmd_in_picked(), { nargs = "*" })
+  vim.api.nvim_create_user_command("Pick", cmd_in_picked(), { nargs = "*" })
   vim.api.nvim_create_user_command(
     "Help",
     cmd_in_picked(function(args)

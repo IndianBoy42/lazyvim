@@ -23,6 +23,11 @@ return {
     event = "InsertEnter",
   },
   {
+    "nvim-mini/mini.keymap",
+    lazy = true,
+    -- TODO: multistep and combo keymaps
+  },
+  {
     -- Search for mnemonic keymaps
     "tris203/hawtkeys.nvim",
     opts = {

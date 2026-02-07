@@ -72,42 +72,56 @@ vim.api.nvim_create_autocmd("User", {
   end,
 })
 return {
-  "mini.files",
-  keys = {
-    {
-      "<leader>of",
-      function()
-        if vim.o.buftype == "" then
-          MiniFiles.open(vim.api.nvim_buf_get_name(0))
-        end
-        MiniFiles.reveal_cwd()
-      end,
-      desc = "File Browser",
-    },
-    {
-      "<leader>oF",
-      function()
-        MiniFiles.open()
-      end,
-      desc = "File Browser CWD",
+  {
+    "folke/snacks.nvim",
+    opts = {
+      explorer = { enabled = false },
+      keys = {
+        { "<leader>fe", false },
+        { "<leader>fE", false },
+        { "<leader>E", false },
+        { "<leader>e", false },
+      },
     },
   },
-  opts = {
-    windows = {
-      preview = true,
-      -- width_nofocus = 30,
+  {
+    "mini.files",
+    keys = {
+      {
+        "<leader>of",
+        function()
+          if vim.o.buftype == "" then
+            MiniFiles.open(vim.api.nvim_buf_get_name(0))
+          end
+          MiniFiles.reveal_cwd()
+        end,
+        desc = "File Browser",
+      },
+      {
+        "<leader>oF",
+        function()
+          MiniFiles.open()
+        end,
+        desc = "File Browser CWD",
+      },
     },
-    options = {
-      use_as_default_explorer = not vim.g.flatten_is_guest,
-    },
-    mappings = {
-      go_in = "l",
-      go_in_plus = "<cr>",
-      go_out = "h",
-      go_out_plus = "-",
-      reset = "<localleader>R",
-      close = "<c-c>",
-      synchronize = O.quicksave,
+    opts = {
+      windows = {
+        preview = true,
+        -- width_nofocus = 30,
+      },
+      options = {
+        use_as_default_explorer = not vim.g.flatten_is_guest,
+      },
+      mappings = {
+        go_in = "l",
+        go_in_plus = "<cr>",
+        go_out = "h",
+        go_out_plus = "-",
+        reset = "<localleader>R",
+        close = "<c-c>",
+        synchronize = O.quicksave,
+      },
     },
   },
 }
