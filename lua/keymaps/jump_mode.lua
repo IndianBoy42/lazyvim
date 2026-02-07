@@ -29,7 +29,7 @@ M.repeatable = function(ch, desc, fwdbwd, _opts)
     ch, s_ch, c_ch, cs_ch = unpack(ch)
   else
     c_ch = ch == ch:upper() and ("<C-" .. ch .. ">") or ("<C-S-" .. ch .. ">")
-    s_ch = ch == ch:upper() and ch:upper() or ch:lower()
+    s_ = ch == ch:upper() and ch:upper() or ch:lower()
     cs_ch = ch == ch:upper() and ("<C-S-" .. ch .. ">") or ("<C-" .. ch .. ">")
   end
   local prev_pre, next_pre, prev_end, next_end

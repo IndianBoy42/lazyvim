@@ -8,11 +8,6 @@ local outer_start = function()
 end
 return {
   setup = function()
-    require("keymaps.jump_mode").repeatable("z", "Fold", {
-      "<cmd>norm zj<cr>",
-      "<cmd>norm zk<cr>",
-    })
-
     local hydra = require("hydra")({
       name = "Folds",
       hint = "z, o, c, O, C",
@@ -90,11 +85,11 @@ return {
         },
       },
     })
-    require("keymaps.jump_mode").repeatable("z", "Folds", {
-      "<cmd>norm zj<cr>",
-      "<cmd>norm zk<cr>",
-      "<cmd>norm ]z<cr>",
-      "<cmd>norm [z<cr>",
-    }, {})
+    -- require("keymaps.jump_mode").repeatable("z", "Folds", {
+    --   "<cmd>norm zj<cr>",
+    --   "<cmd>norm zk<cr>",
+    --   -- "<cmd>norm ]z<cr>",
+    --   -- "<cmd>norm [z<cr>",
+    -- }, {})
   end,
 }
