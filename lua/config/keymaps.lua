@@ -6,6 +6,8 @@ local K = require("keymaps")
 local map = K.set
 local mapl = K.setl
 
+require("keymaps.nN_repeat").setup()
+
 K.set("n", O.quicksave, "<cmd>wa<cr>", { desc = "Save All" })
 K.set("n", "<leader><cr>", function()
   Snacks.picker.smart()
@@ -72,11 +74,14 @@ map("n", "<leader>*", utils.operatorfunc_keys("*"), { desc = "Search (op)", expr
 
 -- Continue the search and keep selecting (equivalent ish to doing `gn` in normal)
 -- TODO: select the current search match if not selected
-map("x", "n", "<esc>ngn", { expr = true })
-map("x", "N", "<esc>NgN", { expr = true })
+map("x", "n", "<esc>ngn", {})
+map("x", "N", "<esc>NgN", {})
 -- Select the current/next search match
 map("x", "gn", "<esc>gn", {})
 map("x", "gN", "<esc>NNgN", {}) -- current/prev
+
+-- Repeat the recent edit with cgn
+map("n", "g.", [[/\V<C-r>"<CR>]] .. "cgn<C-a><ESC>", { desc = "Repeat change" })
 
 -- Start search and replace from search
 map("c", "<M-r>", function()
@@ -262,6 +267,13 @@ map("c", "<c-v>", function()
   -- TODO: refresh inccomand
   return "i<bs>"
 end, { expr = true, desc = "Toggle visual range" })
+
+require("keymappings.scroll_mode").setup()
+require("keymappings.fold_mode").setup()
+
+map("n", "<leader>bs", function()
+  Snacks.picker.buffers()
+end, { desc = "Pick buffers" })
 
 -- TODO: auto repeatable [] mappings
 

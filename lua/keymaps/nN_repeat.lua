@@ -96,6 +96,5 @@ function M.setup()
   map("n", "<C-*>", srchrpt("#"), { desc = "Search cword" })
   map("n", "g*", srchrpt("g*"), { desc = "Search cword whole" })
   map("n", "<C-g><C-*>", srchrpt("g#"), { desc = "Search cword whole" })
-  map("n", "g.", [[/\V<C-r>"<CR>]] .. "cgn<C-a><ESC>", { desc = "Repeat change" }) -- Repeat the recent edit with cgn
 end
 return M

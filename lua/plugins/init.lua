@@ -31,4 +31,9 @@ return {
     "Aasim-A/scrollEOF.nvim",
     opts = {},
   },
+  {
+    "chrisgrieser/nvim-early-retirement",
+    config = true,
+    event = "VeryLazy",
+  },
 }

@@ -12,6 +12,16 @@ return {
       },
     },
   },
+  {
+    "rachartier/tiny-inline-diagnostic.nvim",
+    -- event = "VeryLazy",
+    event = "DiagnosticChanged",
+    opts = {},
+    config = function(_, opts)
+      require("tiny-inline-diagnostic").setup()
+      vim.diagnostic.config({ virtual_text = false }) -- Disable Neovim's default virtual text diagnostics
+    end,
+  },
   { -- "IndianBoy42/actions-preview.nvim",
     "aznhe21/actions-preview.nvim",
     opts = function()

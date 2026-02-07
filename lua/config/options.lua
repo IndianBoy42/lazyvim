@@ -5,6 +5,7 @@
 
 local opt = vim.opt
 local g = vim.g
+local cmd = vim.cmd
 
 --- GREP CONFIGURATION ---
 -- Use ripgrep for grep (explicit definition)
@@ -46,6 +47,12 @@ opt.timeoutlen = 500
 opt.updatetime = 500
 
 opt.autowriteall = true
+
+opt.scrolloff = 10
+opt.sidescrolloff = 10
+
+cmd("set sessionoptions+=globals")
+cmd("set sessionoptions-=help")
 
 --- FILETYPE ASSOCIATIONS ---
 -- Add custom filetype associations

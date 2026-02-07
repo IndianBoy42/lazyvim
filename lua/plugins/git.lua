@@ -9,4 +9,9 @@ return {
     cmd = { "DiffEditor" },
     opts = {},
   },
+  {
+    "esmuellert/codediff.nvim",
+    dependencies = { "MunifTanjim/nui.nvim" },
+    cmd = "CodeDiff",
+  },
 }

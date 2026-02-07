@@ -129,66 +129,65 @@ VM_meta.__call = function(t, ...)
 end
 local VM = setmetatable({ "vm" }, VM_meta)
 
+vim.g.VM_maps = nil
+-- local ldr = "\\"
+-- local ldr = "<Del>" -- FIXME: a little buggy
+local ldr = O.multi_leader_key
+vim.g.VM_leader = ldr
+vim.g.VM_maps = {
+  ["Find Under"] = ldr .. "*",
+  ["Add Cursor At Word"] = "<C-n>",
+  ["Find Next"] = "<M-n>",
+  ["Find Prev"] = "<M-S-n>",
+  ["Goto Next"] = "<M-f>",
+  ["Goto Prev"] = "<M-b>",
+  ["Find Subword Under"] = "<M-n>",
+  ["Add Cursor Down"] = "<M-j>",
+  ["Add Cursor Up"] = "<M-k>",
+  ["Select Cursor Down"] = "<M-S-j>",
+  ["Select Cursor Up"] = "<M-S-k>",
+  ["Skip Region"] = "n",
+  ["Remove Region"] = "N",
+  ["Visual Cursors"] = ldr .. ldr,
+  ["Visual Add"] = "<M-v>",
+  ["Visual Regex"] = "?",
+  ["Slash Search"] = ldr .. "/",
+  -- ["Find Operator"] = "m",
+  ["Find Operator"] = ldr .. "o",
+  ["Undo"] = "u",
+  ["Redo"] = "<C-r>",
+  ["Reselect Last"] = ldr .. ldr,
+  ["Transpose"] = "M",
+  ["Split Regions"] = "-",
+  ["Toggle Mappings"] = ldr .. "<Esc>",
+  ["Surround"] = "s",
+  -- ["Select Operator"] = ldr .. "s",
+  ["Add Cursor At Pos"] = "+",
+  ["Select All"] = ldr .. "O",
+  ["Visual All"] = ldr .. "O",
+  ["Switch Mode"] = "v", -- TODO: also make this Select Operator
+  ["Select Operator"] = "<M-v>",
+}
+if ldr == "<Del>" then
+  vim.g.VM_maps["Del"] = ""
+end
+vim.g.VM_mouse_mappings = 1
+vim.g.VM_add_cursor_at_pos_no_mappings = 1
+
+local theme = "codedark"
+vim.g.VM_theme = theme
+vim.g.VM_user_operators = {
+  "yd",
+  "r",
+  "cx",
+  "yc",
+}
+
 return {
   "IndianBoy42/vim-visual-multi",
-  api = VM,
+  -- api = VM,
   priority = 500,
   lazy = false,
-  init = function()
-    vim.g.VM_maps = nil
-    -- local ldr = "\\"
-    -- local ldr = "<Del>" -- FIXME: a little buggy
-    local ldr = O.multi_leader_key
-    vim.g.VM_leader = ldr
-    vim.g.VM_maps = {
-      ["Find Under"] = ldr .. "*",
-      ["Add Cursor At Word"] = "<C-n>",
-      ["Find Next"] = "<M-n>",
-      ["Find Prev"] = "<M-S-n>",
-      ["Goto Next"] = "<M-f>",
-      ["Goto Prev"] = "<M-b>",
-      ["Find Subword Under"] = "<M-n>",
-      ["Add Cursor Down"] = "<M-j>",
-      ["Add Cursor Up"] = "<M-k>",
-      ["Select Cursor Down"] = "<M-S-j>",
-      ["Select Cursor Up"] = "<M-S-k>",
-      ["Skip Region"] = "n",
-      ["Remove Region"] = "N",
-      ["Visual Cursors"] = ldr .. ldr,
-      ["Visual Add"] = "<M-v>",
-      ["Visual Regex"] = "?",
-      ["Slash Search"] = ldr .. "/",
-      -- ["Find Operator"] = "m",
-      ["Find Operator"] = ldr .. "o",
-      ["Undo"] = "u",
-      ["Redo"] = "<C-r>",
-      ["Reselect Last"] = ldr .. ldr,
-      ["Transpose"] = "M",
-      ["Split Regions"] = "-",
-      ["Toggle Mappings"] = ldr .. "<Esc>",
-      ["Surround"] = "s",
-      -- ["Select Operator"] = ldr .. "s",
-      ["Add Cursor At Pos"] = "+",
-      ["Select All"] = ldr .. "O",
-      ["Visual All"] = ldr .. "O",
-      ["Switch Mode"] = "v", -- TODO: also make this Select Operator
-      ["Select Operator"] = "<M-v>",
-    }
-    if ldr == "<Del>" then
-      vim.g.VM_maps["Del"] = ""
-    end
-    vim.g.VM_mouse_mappings = 1
-    vim.g.VM_add_cursor_at_pos_no_mappings = 1
-
-    local theme = "codedark"
-    vim.g.VM_theme = theme
-    vim.g.VM_user_operators = {
-      "yd",
-      "r",
-      "cx",
-      "yc",
-    }
-  end,
   config = function()
     -- TODO: yolo and merge this into the github lol, i forked it anyway, could be implemented better anyway
     vim.cmd.VMTheme(vim.g.VM_theme)
@@ -338,11 +337,12 @@ return {
         -- )
       end,
     })
-    local mapl = vim.keymap.setl
     vim.api.nvim_create_autocmd("User", {
       pattern = "visual_multi_start",
       callback = function()
+        local mapl = vim.keymap.setl
         mapl("n", ldr .. "", "v")
+        vim.print("okay")
         mapl("n", "v", function()
           local x = vim.g.Vm.extend_mode == 1
           if x then
@@ -364,10 +364,10 @@ return {
         mapl("n", ")", "<Plug>(VM-Transpose)")
       end,
     })
-    local unmap = vim.keymap.dell
     vim.api.nvim_create_autocmd("User", {
       pattern = "visual_multi_exit",
       callback = function()
+        local unmap = vim.keymap.dell
         unmap("n", "v")
         unmap("n", "<C-n>")
         unmap("n", "<C-S-n>")
@@ -376,6 +376,15 @@ return {
         unmap("n", ")")
       end,
     })
+    vim.cmd([[
+  function! VM_Start()
+  echo "VM start"
+  endfunction
+
+  function! VM_Exit()
+  echo "VM exit"
+  endfunction
+        ]])
 
     map("n", "<Plug>(VM-Disable-Mappings)", ":call b:VM_Selection.Maps.disable(1)<cr>", { silent = true })
     map("n", "<Plug>(VM-Enable-Mappings)", ":call b:VM_Selection.Maps.enable()<cr>", { silent = true })
