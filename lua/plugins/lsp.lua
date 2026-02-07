@@ -63,10 +63,52 @@ Snacks.keymap.set("n", "gd", vim.lsp.buf.definition, {
     "rachartier/tiny-inline-diagnostic.nvim",
     -- event = "VeryLazy",
     event = "DiagnosticChanged",
-    opts = {},
+    opts = {
+      options = {
+        transparent_bg = true,
+        show_source = {
+          if_many = true,
+          set_arrow_to_diag_color = true,
+        },
+        softwrap = 30,
+        add_messages = {
+          display_count = true, -- Show diagnostic count instead of messages when cursor not on line
+        },
+        multilines = {
+          enabled = true,
+        },
+        show_all_diags_on_cursorline = true,
+
+        -- Experimental options, subject to misbehave in future NeoVim releases
+        experimental = {
+          -- Make diagnostics not mirror across windows containing the same buffer
+          -- See: https://github.com/rachartier/tiny-inline-diagnostic.nvim/issues/127
+          use_window_local_extmarks = false,
+        },
+      },
+    },
     config = function(_, opts)
-      require("tiny-inline-diagnostic").setup()
+      require("tiny-inline-diagnostic").setup(opts)
       vim.diagnostic.config({ virtual_text = false }) -- Disable Neovim's default virtual text diagnostics
+
+      -- diagnostic
+      local diagnostic_goto = function(next, severity)
+        return function()
+          vim.diagnostic.jump({
+            count = (next and 1 or -1) * vim.v.count1,
+            severity = severity and vim.diagnostic.severity[severity] or nil,
+            -- NOTE: disable the popup because of tiny-inline-diagnostic
+            float = false,
+          })
+        end
+      end
+      local map = vim.keymap.set
+      map("n", "]d", diagnostic_goto(true), { desc = "Next Diagnostic" })
+      map("n", "[d", diagnostic_goto(false), { desc = "Prev Diagnostic" })
+      map("n", "]e", diagnostic_goto(true, "ERROR"), { desc = "Next Error" })
+      map("n", "[e", diagnostic_goto(false, "ERROR"), { desc = "Prev Error" })
+      map("n", "]w", diagnostic_goto(true, "WARN"), { desc = "Next Warning" })
+      map("n", "[w", diagnostic_goto(false, "WARN"), { desc = "Prev Warning" })
     end,
   },
   { -- "IndianBoy42/actions-preview.nvim",

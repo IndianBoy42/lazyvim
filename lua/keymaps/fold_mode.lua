@@ -66,23 +66,6 @@ return {
         { "r", "zr", { desc = "Open More" } },
         { "M", "zM", { desc = "Close All" } },
         { "R", "zR", { desc = "Open All" } },
-        { -- TODO:
-          "p",
-          function()
-            local winid = require("ufo").peekFoldedLinesUnderCursor()
-            if winid then
-              local bufnr = vim.api.nvim_win_get_buf(winid)
-              local keys = { "a", "i", "o", "A", "I", "O", "gd", "gr" }
-              for _, k in ipairs(keys) do
-                -- Add a prefix key to fire `trace` action,
-                map("n", k, O.localleader .. k, { noremap = false, buffer = bufnr })
-              end
-            else
-              -- nvimlsp
-              vim.lsp.buf.hover()
-            end
-          end,
-        },
       },
     })
     -- require("keymaps.jump_mode").repeatable("z", "Folds", {

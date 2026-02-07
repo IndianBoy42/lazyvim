@@ -6,6 +6,9 @@ local K = require("keymaps")
 local map = K.set
 local mapl = K.setl
 
+map("n", "<m-k>", "<Plug>(VM-Select-Cursor-Up)")
+map("n", "<m-j>", "<Plug>(VM-Select-Cursor-Down)")
+
 require("keymaps.nN_repeat").setup()
 
 K.set("n", O.quicksave, "<cmd>wa<cr>", { desc = "Save All" })
@@ -294,9 +297,15 @@ end, { expr = true, desc = "Toggle visual range" })
 require("keymaps.scroll_mode").setup()
 require("keymaps.fold_mode").setup()
 
--- TODO: auto repeatable [] mappings
 map("n", "]c", "g;", { desc = "Newer Change" })
 map("n", "[c", "g,", { desc = "Older Change" })
+
+-- TODO: auto repeatable [] mappings
+-- vim.keymap.amend_prefixed("n", "]", function(original, map)
+--   lhs = map.lhs:sub(2)
+--   mapl("n", lhs, original)
+--   original()
+-- end)
 
 -- TODO: quickly run short commands
 -- local short_cmd = require("keymaps.short_cmd")
