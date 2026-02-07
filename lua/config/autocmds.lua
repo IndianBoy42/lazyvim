@@ -2,15 +2,7 @@
 -- LazyVim default autocmds: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/autocmds.lua
 
 local aucmd = vim.api.nvim_create_autocmd
-local augrp = function(name, fn)
-  local group = vim.api.nvim_create_augroup(name, { clear = true })
-  fn(function(evt, opts)
-    if type(opts) == "function" then
-      opts = { callback = opts }
-    end
-    aucmd(evt, vim.tbl_extend("force", { group = group }, opts))
-  end)
-end
+local augrp = utils.augrp
 
 -- ============================================================================
 -- QUICKFIX WINDOW POSITION FIX

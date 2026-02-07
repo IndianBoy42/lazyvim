@@ -103,7 +103,7 @@ return {
       { "f", leap_ft("f"), mode = { "n", "x", "o" } },
       { "F", leap_ft("f"), mode = { "n", "x", "o" } },
       { "t", leap_ft("t"), mode = { "n", "x", "o" } },
-      { "t", leap_ft("T"), mode = { "n", "x", "o" } },
+      { "T", leap_ft("T"), mode = { "n", "x", "o" } },
       { "}" }, -- Repeat mappings
       { "{" },
       { "s", "<Plug>(leap)", mode = "n", desc = "Leap" },

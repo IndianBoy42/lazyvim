@@ -45,6 +45,8 @@ opt.timeoutlen = 500
 -- Cursor hold update time
 opt.updatetime = 500
 
+opt.autowriteall = true
+
 --- FILETYPE ASSOCIATIONS ---
 -- Add custom filetype associations
 vim.filetype.add({

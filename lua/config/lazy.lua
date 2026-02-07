@@ -14,6 +14,15 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+utils.augrp("lazy_filetype", function(au)
+  au("FileType", {
+    pattern = "lazy",
+    callback = function()
+      vim.keymap.setl("n", "<localleader>n", "/[○●]<cr>", { desc = "Next plugin" })
+    end,
+  })
+end)
+
 require("lazy").setup({
   spec = {
     -- add LazyVim and import its plugins
@@ -30,23 +39,74 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
+  change_detection = { notify = false },
   install = { colorscheme = { "tokyonight", "habamax" } },
   checker = {
     enabled = true, -- check for plugin updates periodically
-    notify = false, -- notify on update
+    notify = true, -- notify on update
   }, -- automatically check for plugin updates
+  dev = {
+    path = "~/dev/nvim.plugins/",
+    filter = { "IndianBoy42" },
+  },
+  ui = {
+
+    border = "rounded",
+    custom_keys = {
+      ["<localleader>l"] = false,
+      ["<localleader>t"] = {
+        desc = "Open in new Kitty",
+        function(plugin)
+          require("kitty.terms").new_os_window(
+            { open_cwd = plugin.dir },
+            -- TODO: don't hardcode fish
+            { "fish", "-C", "ls", "-C", "commandline -f repaint" }
+          )
+        end,
+      },
+      ["<localleader>g"] = {
+        desc = "Open gitui in new Kitty",
+        function(plugin)
+          require("kitty.terms").new_os_window({ open_cwd = plugin.dir }, "gitui")
+        end,
+      },
+      ["<localleader>m"] = {
+        desc = "Open in Smerge",
+        function(plugin)
+          vim.system({ "smerge", plugin.dir })
+        end,
+      },
+      ["<localleader>h"] = {
+        desc = "Open in github browser",
+        function(plugin)
+          vim.cmd("!gh repo view --web " .. plugin[1])
+          -- require("kitty").new_os_window({ open_cwd = plugin.dir }, "gitui")
+        end,
+      },
+    },
+  },
   performance = {
     rtp = {
       -- disable some rtp plugins
       disabled_plugins = {
+        "netrw",
+        "netrwPlugin",
+        "netrwSettings",
+        "netrwFileHandlers",
         "gzip",
-        -- "matchit",
-        -- "matchparen",
-        -- "netrwPlugin",
-        "tarPlugin",
-        "tohtml",
-        "tutor",
+        "zip",
         "zipPlugin",
+        "tar",
+        "tarPlugin",
+        "getscript",
+        "getscriptPlugin",
+        "vimball",
+        "vimballPlugin",
+        "2html_plugin",
+        "logipat",
+        "rrhelper",
+        "spellfile_plugin",
+        "matchit",
       },
     },
   },

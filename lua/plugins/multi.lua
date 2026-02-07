@@ -1,29 +1,45 @@
 local nvim_feedkeys = vim.api.nvim_feedkeys
 local function feedkeys(keys, o)
-  if o == nil then o = "m" end
+  if o == nil then
+    o = "m"
+  end
   nvim_feedkeys(vim.keycode(keys), o, false)
 end
 local function wrap_vm(prefix, vm, suffix)
   prefix = prefix or ""
   vm = vm and ("<Plug>(VM-" .. vm .. ")") or ""
   local first = vm
-  if suffix == nil then return first end
+  if suffix == nil then
+    return first
+  end
   return function()
-    if type(prefix) == "function" then prefix = prefix() end
-    if type(prefix) == "string" then first = prefix .. first end
+    if type(prefix) == "function" then
+      prefix = prefix()
+    end
+    if type(prefix) == "string" then
+      first = prefix .. first
+    end
     feedkeys(first, "m")
     -- Defer to avoid `<Plug>(VM-Hls)`
     vim.defer_fn(function()
-      if type(suffix) == "function" then suffix = suffix() end
-      if type(suffix) == "string" and #suffix > 0 then feedkeys(suffix, "m") end
+      if type(suffix) == "function" then
+        suffix = suffix()
+      end
+      if type(suffix) == "string" and #suffix > 0 then
+        feedkeys(suffix, "m")
+      end
       -- HACK: tune this value
     end, 0)
   end
 end
 local function wrap_vm_call(prefix, vm, affix)
   local wrapped = wrap_vm(prefix, vm, affix)
-  if type(wrapped) == "function" then wrapped() end
-  if type(wrapped) == "string" then feedkeys(wrapped) end
+  if type(wrapped) == "function" then
+    wrapped()
+  end
+  if type(wrapped) == "string" then
+    feedkeys(wrapped)
+  end
 end
 -- TODO: implement custom operators in core
 local ops = {
@@ -41,7 +57,9 @@ local function multiop(select, find)
     local operator = vim.v.operator
     local rhs = ops[operator] or operator
     local opfunc = vim.go.operatorfunc
-    if operator == "g@" then rhs = ops[opfunc] end
+    if operator == "g@" then
+      rhs = ops[opfunc]
+    end
 
     local function callback()
       if rhs ~= nil then
@@ -52,16 +70,18 @@ local function multiop(select, find)
               group = vim.api.nvim_create_augroup("after_multi_op_exit", {}),
               pattern = "*:n",
               once = true,
-              callback = function() feedkeys "<Plug>(VM-Exit)" end,
+              callback = function()
+                feedkeys("<Plug>(VM-Exit)")
+              end,
             })
           else
-            feedkeys "<Plug>(VM-Exit)"
+            feedkeys("<Plug>(VM-Exit)")
           end
         end)
       else
         -- operatorfunc doesnt work in general so youre out of luck
         vim.go.operatorfunc = opfunc
-        vim.cmd [[call b:VM_Selection.Edit.run_visual("g@", 1)]]
+        vim.cmd([[call b:VM_Selection.Edit.run_visual("g@", 1)]])
       end
     end
     if select == "?" then
@@ -82,7 +102,9 @@ local function multiop(select, find)
       callback = callback,
     })
     if select == true then
-      local finish = vim.schedule_wrap(function() wrap_vm_call(nil, "Find-Subword-Under", find) end)
+      local finish = vim.schedule_wrap(function()
+        wrap_vm_call(nil, "Find-Subword-Under", find)
+      end)
       _G.__multiop_finish = function()
         feedkeys("`[v`]", "n")
         finish()
@@ -90,22 +112,28 @@ local function multiop(select, find)
       vim.go.operatorfunc = "v:lua.__multiop_finish"
       feedkeys("g@", "n")
     else
-      local finish = vim.schedule_wrap(
-        function() wrap_vm_call(nil, select == "/" and "Find-Regex" or "Find-Under", find) end
-      )
+      local finish = vim.schedule_wrap(function()
+        wrap_vm_call(nil, select == "/" and "Find-Regex" or "Find-Under", find)
+      end)
       finish()
     end
   end
 end
 
 local VM_meta = {}
-VM_meta.__index = function(t, k) return setmetatable({ t[1] .. "#" .. k }, VM_meta) end
-VM_meta.__call = function(t, ...) return vim.fn[t[0]](...) end
+VM_meta.__index = function(t, k)
+  return setmetatable({ t[1] .. "#" .. k }, VM_meta)
+end
+VM_meta.__call = function(t, ...)
+  return vim.fn[t[0]](...)
+end
 local VM = setmetatable({ "vm" }, VM_meta)
 
 return {
   "IndianBoy42/vim-visual-multi",
   api = VM,
+  priority = 500,
+  lazy = false,
   init = function()
     vim.g.VM_maps = nil
     -- local ldr = "\\"
@@ -146,7 +174,9 @@ return {
       ["Switch Mode"] = "v", -- TODO: also make this Select Operator
       ["Select Operator"] = "<M-v>",
     }
-    if ldr == "<Del>" then vim.g.VM_maps["Del"] = "" end
+    if ldr == "<Del>" then
+      vim.g.VM_maps["Del"] = ""
+    end
     vim.g.VM_mouse_mappings = 1
     vim.g.VM_add_cursor_at_pos_no_mappings = 1
 
@@ -166,12 +196,7 @@ return {
     local map = vim.keymap.set
     -- Autoselect the next occurence
     map({ "x", "n" }, "<M-n>", "<Plug>(VM-Find-Under)<Plug>(VM-Find-Under)")
-    map(
-      { "x" },
-      "<C-n>",
-      "<Plug>(VM-Add-Cursor-At-SubWord)",
-      { remap = true, desc = "Add Cursor At Region" }
-    )
+    map({ "x" }, "<C-n>", "<Plug>(VM-Add-Cursor-At-SubWord)", { remap = true, desc = "Add Cursor At Region" })
     map("x", "+", "<C-v>", { remap = true, desc = "Add regions" })
     map(
       "x",
@@ -181,7 +206,7 @@ return {
     )
     map("x", "I", wrap_vm(nil, "Visual-Add", "i"), { remap = true })
     map("x", "A", wrap_vm(nil, "Visual-Add", "a"), { remap = true })
-    local c_v = vim.keycode "<C-v>"
+    local c_v = vim.keycode("<C-v>")
     map("x", "c", function()
       if vim.api.nvim_get_mode().mode == c_v then
         wrap_vm(nil, "Visual-Add", "c")()
@@ -238,21 +263,17 @@ return {
     end, { expr = true, remap = true, desc = "Visual Multi" })
 
     -- Multi select object
-    local find_under_operator = utils.operatorfunc_keys "<Plug>(VM-Find-Subword-Under)"
+    local find_under_operator = utils.operatorfunc_keys("<Plug>(VM-Find-Subword-Under)")
     map("n", "<M-v>", find_under_operator, { desc = "MVisual (op)", expr = true })
     -- map("n", "m", find_under_operator, { desc = "Find Under (op)" })
     -- Multi select all
-    local select_all_operator = utils.operatorfunc_fn(
-      vim.schedule_wrap(
-        function() wrap_vm_call(nil, "Find-Subword-Under", "<Plug>(VM-Select-All)") end
-      )
-    )
+    local select_all_operator = utils.operatorfunc_fn(vim.schedule_wrap(function()
+      wrap_vm_call(nil, "Find-Subword-Under", "<Plug>(VM-Select-All)")
+    end))
     map("n", ldr .. "A", select_all_operator, { desc = "Select all (op)", expr = true })
-    local select_in_operator = utils.operatorfunc_fn(
-      vim.schedule_wrap(
-        function() wrap_vm_call(nil, "Find-Subword-Under", "<Plug>(VM-Find-Operator)") end
-      )
-    )
+    local select_in_operator = utils.operatorfunc_fn(vim.schedule_wrap(function()
+      wrap_vm_call(nil, "Find-Subword-Under", "<Plug>(VM-Find-Operator)")
+    end))
     map("n", ldr .. "I", select_in_operator, { desc = "Select (op) in", expr = true })
     map(
       "n",
@@ -276,8 +297,7 @@ return {
     -- TODO: Start-Regex-Search version of operators
 
     -- TODO: this should be implemented in vm core
-    local add_selection_operator =
-      utils.operatorfunc_keys "<Plug>(VM-Visual-Add)<Plug>(VM-Disable-Mappings)"
+    local add_selection_operator = utils.operatorfunc_keys("<Plug>(VM-Visual-Add)<Plug>(VM-Disable-Mappings)")
     map("n", ldr .. "+", add_selection_operator, { desc = "Add Selection (op)", expr = true })
     map("n", ldr .. "r", function()
       add_selection_operator()
@@ -294,10 +314,10 @@ return {
       wrap_vm(nil, "Find-Regex", "<Plug>(VM-Select-All)"),
       { remap = true, desc = "Select all of last search" }
     )
-    local find_in_operator = utils.operatorfunc_keys "<Plug>(VM-Visual-Find)"
+    local find_in_operator = utils.operatorfunc_keys("<Plug>(VM-Visual-Find)")
     map("n", ldr .. "no", find_in_operator, { desc = "Select last search in (op)", expr = true })
     map("x", "/", function()
-      local cursor, other = vim.fn.getpos ".", vim.fn.getpos "v"
+      local cursor, other = vim.fn.getpos("."), vim.fn.getpos("v")
       if cursor ~= other or vim.api.nvim_get_mode().mode == "V" then
         return "<Plug>(VM-Visual-Regex)"
       else
@@ -357,21 +377,10 @@ return {
       end,
     })
 
-    map(
-      "n",
-      "<Plug>(VM-Disable-Mappings)",
-      ":call b:VM_Selection.Maps.disable(1)<cr>",
-      { silent = true }
-    )
-    map(
-      "n",
-      "<Plug>(VM-Enable-Mappings)",
-      ":call b:VM_Selection.Maps.enable()<cr>",
-      { silent = true }
-    )
+    map("n", "<Plug>(VM-Disable-Mappings)", ":call b:VM_Selection.Maps.disable(1)<cr>", { silent = true })
+    map("n", "<Plug>(VM-Enable-Mappings)", ":call b:VM_Selection.Maps.enable()<cr>", { silent = true })
     map("n", "<Plug>(VM-Motion-()", "<Plug>(VM-Transpose)")
 
     -- TODO: https://docs.helix-editor.com/keymap.html#selection-manipulation
   end,
-  lazy = false,
 }

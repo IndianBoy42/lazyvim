@@ -3,6 +3,8 @@
 
 local O = {}
 
+vim.g.kitty_scrollback = vim.env.KITTY_SCROLLBACK_NVIM == "true"
+
 -- Hint labels for hop/hint-based navigation
 -- Optimized for home row keys with frequency-based ordering
 O.hint_labels = "jklfdsahgnmervcxzbuioyptwq"

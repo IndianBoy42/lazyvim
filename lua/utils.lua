@@ -1,5 +1,7 @@
 local M = {}
 
+F = loadstring
+
 local feedkeys = vim.api.nvim_feedkeys
 local t = vim.keycode
 
@@ -165,6 +167,16 @@ M.lsp_attach = function(on_attach, group)
       on_attach(client, buffer)
     end,
   })
+end
+
+M.augrp = function(name, fn)
+  local group = vim.api.nvim_create_augroup(name, { clear = true })
+  fn(function(evt, opts)
+    if type(opts) == "function" then
+      opts = { callback = opts }
+    end
+    vim.api.nvim_create_autocmd(evt, vim.tbl_extend("force", { group = group }, opts))
+  end)
 end
 
 return M
