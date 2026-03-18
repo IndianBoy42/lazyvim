@@ -9,14 +9,6 @@ local preamble = [[
 
     return snippets, autosnippets
     ]]
-local stylua_toml = [[column_width = 120
-line_endings = "Unix"
-indent_type = "Spaces"
-indent_width = 2
-quote_style = "AutoPreferDouble"
-call_parentheses = "None"
-collapse_simple_statement = "Always"
-]]
 
 local last_lua_module_section = function(args) --{{{
   local text = args[1][1] or ""
@@ -37,7 +29,7 @@ local function node_refs_node(ji)
     fmt([[, {{ {} }}]], {
       i(1, "refs"),
     }),
-    t "",
+    t(""),
   })
 end
 local function lambda_node()
@@ -109,7 +101,7 @@ local function fmt_node(srch, fmts)
       local res = {}
       for j = 1, count do
         table.insert(res, any_node(j))
-        table.insert(res, t { ",", "" })
+        table.insert(res, t({ ",", "" }))
       end
       return sn(nil, res)
     end, { 1 }),
@@ -127,7 +119,9 @@ any_node = function(j, k, with_fmt)
     sn(nil, dyn_node(k)),
     sn(nil, i(1, "node")),
   }
-  if with_fmt then nodes = { fmt_node(), unpack(nodes) } end
+  if with_fmt then
+    nodes = { fmt_node(), unpack(nodes) }
+  end
   return c(j, nodes)
 end
 local function snip_node()
@@ -141,7 +135,6 @@ end
 local snippets = {
   s("opfunc", fmt("vim.go.operatorfunc = 'v:lua.__{}_opfunc'", i(1, "my"))),
   s("luasnippets_preamble", t(vim.split(preamble, "\n"))),
-  s("stylua_toml", t(vim.split(stylua_toml, "\n"))),
   s(
     "snip",
     fmt("s('{}', {})", {
@@ -163,7 +156,7 @@ local snippets = {
   s("dyn-node", dyn_node()),
   s("lambda-node", lambda_node()),
   s("dlambda-node", dyn_lambda_node()),
-  s("selected_text", t "snip.env.TM_SELECTED_TEXT"),
+  s("selected_text", t("snip.env.TM_SELECTED_TEXT")),
 
   s(
     "module",
@@ -214,63 +207,63 @@ return M]],
     -- }
   ),
   s("link_url", {
-    t '<a href="',
+    t('<a href="'),
     sel(),
-    t '">',
+    t('">'),
     i(1),
-    t "</a>",
+    t("</a>"),
   }),
   -- TODO: make this smarter?
   s("function", {
-    t "function ",
+    t("function "),
     i(1),
-    t "(",
+    t("("),
     i(2),
-    t { ")", "" },
+    t({ ")", "" }),
     sel(),
     -- t { "", "" },
     i(0),
-    t { "", "end" },
+    t({ "", "end" }),
     -- r(1),
     -- t "(",
     -- r(2),
     -- t { ")", "" },
   }),
   s("funcret", {
-    t "function ",
+    t("function "),
     i(1),
-    t "(",
+    t("("),
     i(2),
-    t { ")", "return " },
+    t({ ")", "return " }),
     sel(),
     -- t { "", "" },
     i(0),
-    t { "", "end" },
+    t({ "", "end" }),
     -- r(1),
     -- t "(",
     -- r(2),
     -- t { ")", "" },
   }),
   s("if", {
-    t "if ",
+    t("if "),
     i(1),
-    t { "then", "" },
+    t({ "then", "" }),
     sel(),
     -- t { "", "" },
     i(0),
     -- TODO: choice node here
-    t { "", "end" },
+    t({ "", "end" }),
     -- r(1),
     -- t "(",
     -- r(2),
     -- t { ")", "" },
   }),
   s("iife", {
-    t { "(function ()", "return" },
+    t({ "(function ()", "return" }),
     sel(),
     -- t { "", "" },
     i(0),
-    t { "", "end)()" },
+    t({ "", "end)()" }),
     -- r(1),
     -- t "(",
     -- r(2),
@@ -309,8 +302,8 @@ return M]],
     { trig = "ignore", name = "Ignore Stylua" },
     fmt("-- stylua: ignore {}\n{}", {
       c(1, {
-        t "start",
-        t "end",
+        t("start"),
+        t("end"),
       }),
       i(0),
     })
@@ -382,11 +375,15 @@ local t = vim.keycode
       d(2, function(_, parent)
         local line = parent.env.POSTFIX_MATCH
         if line then
-          if line:find "group%s*=%s*$" then return sn(nil, { t "" }) end
-          if line:find "local%s+$" then return sn(nil, { t "augroup = " }) end
+          if line:find("group%s*=%s*$") then
+            return sn(nil, { t("") })
+          end
+          if line:find("local%s+$") then
+            return sn(nil, { t("augroup = ") })
+          end
         end
         -- if line:find "local%s+$" then return sn(nil, { l(l._1, { 1 }) }) end
-        return sn(nil, { t "group = " })
+        return sn(nil, { t("group = ") })
       end),
       i(1),
     })
@@ -428,7 +425,7 @@ local t = vim.keycode
               i(1, "patterns"),
             })
           ),
-          t '"*"',
+          t('"*"'),
         }),
         c(4, {
           sn(
@@ -452,14 +449,14 @@ local t = vim.keycode
       }
     )
   ),
-  s("bufnr", t "bufnr = vim.api.nvim_get_current_buf()"),
-  s("winnr", t "winnr = vim.api.nvim_get_current_win()"),
-  s("tabnr", t "tabnr = vim.api.nvim_get_current_tab()"),
+  s("bufnr", t("bufnr = vim.api.nvim_get_current_buf()")),
+  s("winnr", t("winnr = vim.api.nvim_get_current_win()")),
+  s("tabnr", t("tabnr = vim.api.nvim_get_current_tab()")),
   postfix({ trig = "++", desc = "increment" }, fmt("{} = {} + 1", { l(l.POSTFIX_MATCH, {}), l(l.POSTFIX_MATCH, {}) })),
   postfix({ trig = "--", desc = "increment" }, fmt("{} = {} - 1", { l(l.POSTFIX_MATCH, {}), l(l.POSTFIX_MATCH, {}) })),
 }
 local autosnippets = {
-  s("!=", t "~="),
+  s("!=", t("~=")),
 }
 
 return snippets, autosnippets

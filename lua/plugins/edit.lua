@@ -90,8 +90,6 @@ return { -- mizlan/iswap.nvim
       { "<C-p>", "<Plug>(YankyCycleForward)", mode = { "n", "x" }, desc = "Cycle paste backward" },
       -- TODO: Cycle hydra for no modifiers?
       { "<M-p>", "<Plug>(YankyCycleBackward)", mode = { "n", "x" }, desc = "Cycle paste forward" },
-      { "<leader>p", "<Plug>(YankyPutIndentAfterLinewise)", mode = "n", desc = "Put after line" },
-      { "<leader>P", "<Plug>(YankyPutIndentBeforeLinewise)", mode = "n", desc = "Put before line" },
       { "yp", "<Plug>(YankyPutIndentAfterCharwise)", mode = "n", desc = "Put after char" },
       { "yP", "<Plug>(YankyPutIndentBeforeCharwise)", mode = "n", desc = "Put before char" },
       {
@@ -146,10 +144,10 @@ return { -- mizlan/iswap.nvim
         { "<leader>r.", ":%s/<C-R>.//g<Left><Left>", desc = "Last insert" },
         { "<leader>r/", ":%s/<C-R>///g<Left><Left>", desc = "Last search" },
 
-        { '<leader>r"', ':%s/<C-R>"//g<Left><Left>', desc = "Last cdy", mode = "x" },
-        { "<leader>r+", ":%s/<C-R>+//g<Left><Left>", desc = "Last clipboard", mode = "x" },
-        { "<leader>r.", ":%s/<C-R>.//g<Left><Left>", desc = "Last insert", mode = "x" },
-        { "<leader>r/", ":%s/<C-R>///g<Left><Left>", desc = "Last search", mode = "x" },
+        { '<leader>r"', ':s/<C-R>"//g<Left><Left>', desc = "Last cdy", mode = "x" },
+        { "<leader>r+", ":s/<C-R>+//g<Left><Left>", desc = "Last clipboard", mode = "x" },
+        { "<leader>r.", ":s/<C-R>.//g<Left><Left>", desc = "Last insert", mode = "x" },
+        { "<leader>r/", ":s/<C-R>///g<Left><Left>", desc = "Last search", mode = "x" },
         { "<leader>rs", ":s///g<Left><Left><Left>", desc = "In Selection", mode = "x" },
 
         -- TODO: fuck these, just use vim-visual-multi?

@@ -19,15 +19,19 @@ local function leap_bi_o(inc)
 
     if inc == true or inc == 2 then
       if behind then
-        vim.cmd("normal! h")
       else
         vim.cmd("normal! l")
       end
     elseif inc == false or inc == 0 then
       if behind then
-        vim.cmd("normal! l")
+        vim.cmd("normal! ll")
       else
         vim.cmd("normal! h")
+      end
+    elseif inc == 1 then
+      if behind then
+        vim.cmd("normal! l")
+      else
       end
     end
   end
@@ -108,9 +112,14 @@ return {
       { "{" },
       { "s", "<Plug>(leap)", mode = "n", desc = "Leap" },
       { "q", "<Plug>(leap)", mode = { "x", "o" }, desc = "Leap" },
-      { "S", "<Plug>(leap-remote)", mode = "n", desc = "Leap Remote" },
       {
         O.goto_prefix .. O.goto_prefix,
+        "<Plug>(leap-anywhere)",
+        mode = { "n", "x", "o" },
+        desc = "Leap anywhere",
+      },
+      {
+        "S",
         "<Plug>(leap-anywhere)",
         mode = { "n", "x", "o" },
         desc = "Leap anywhere",
@@ -145,21 +154,13 @@ return {
         O.goto_prefix .. "r",
         "<Plug>(leap-remote)",
         desc = "Leap Remote",
-        mode = { "n", "x", "o" },
+        mode = { "n", "x" },
       },
       {
         "r",
         "<Plug>(leap-remote)",
         desc = "Leap Remote",
         mode = "o",
-      },
-      {
-        "<Plug>(leap-remote)",
-        function()
-          require("leap.remote").action()
-        end,
-        desc = "Leap Remote",
-        mode = { "n", "o", "x" },
       },
       { -- FIXME: treesitter doesn't trigger (leap thinks we're done too soon)
         O.select_remote_dynamic,
@@ -172,32 +173,28 @@ return {
         mode = { "o", "x" },
       },
       {
-        "<Plug>(leap-treesitter)",
+        O.goto_prefix .. ".",
         function()
-          require("leap.treesitter").select()
-          -- local sk = vim.deepcopy(require("leap").opts.special_keys)
-          -- -- The items in `special_keys` can be both strings or tables - the
-          -- -- shortest workaround might be the below one:
-          -- sk.next_target = vim.fn.flatten(vim.list_extend({ O.select_dynamic }, { sk.next_target }))
-          -- sk.prev_target = vim.fn.flatten(vim.list_extend({ O.select_dynamic:upper() }, { sk.prev_target }))
-          -- require("leap.treesitter").select { opts = { special_keys = sk } }
+          require("leap.remote").action({ input = "." })
         end,
-        mode = { "n", "o", "x" },
-        desc = "Cursor Node",
+        desc = ".-repeat remote",
+        mode = { "n" },
       },
       {
-        "<Plug>(leap-treesitter-line)",
-        'V<cmd>lua require("leap.treesitter").select()<cr>',
-        mode = { "n", "o", "x" },
-        desc = "Cursor V Node",
+        O.goto_prefix .. "s",
+        function()
+          require("leap.remote").action({ input = "v" })
+        end,
+        desc = ".-repeat remote",
+        mode = { "n" },
       },
       {
         "<leader>gx",
         function()
           require("leap.remote").action({ input = "gx" })
         end,
-        desc = "Leap Remote",
-        mode = { "o", "x" },
+        desc = "gx remote",
+        mode = "n",
       },
       {
         "ar",
@@ -210,7 +207,7 @@ return {
           require("leap.remote").action({ input = "a" .. char })
         end,
         mode = { "o", "x" },
-        desc = "Leap Remote (inside)",
+        desc = "Leap Remote (around)",
       },
       {
         "ir",
@@ -222,7 +219,23 @@ return {
           require("leap.remote").action({ input = "i" .. char })
         end,
         mode = { "o", "x" },
-        desc = "Leap Remote (around)",
+        desc = "Leap Remote (inside)",
+      },
+      {
+        O.goto_prefix .. "/",
+        function()
+          require("leap.remote").action({ jumper = "/" })
+        end,
+        desc = "Remote op at /",
+        mode = { "n", "o" },
+      },
+      {
+        O.goto_prefix .. "?",
+        function()
+          require("leap.remote").action({ jumper = "?" })
+        end,
+        desc = "Remote op at ?",
+        mode = { "n", "o" },
       },
       {
         "rp",
@@ -322,18 +335,55 @@ return {
           nav.swap_with({ exchange = { not_there = true } })
         end,
       },
-      { "<leader>f", "<Plug>(leap-forward-to)", mode = "x", desc = "Leap f" },
-      { "<leader>t", "<Plug>(leap-forward-till)", mode = "x", desc = "Leap t" },
-      { "<leader>F", "<Plug>(leap-backward-to)", mode = "x", desc = "Leap F" },
-      { "<leader>T", "<Plug>(leap-backward-till)", mode = "x", desc = "Leap T" },
-      -- { "<leader>f", leap_bi_x(2), mode = "x", desc = "Leap Inc" },
-      -- { "<leader>t", leap_bi_x(0), mode = "x", desc = "Leap Exc" },
-      { "<leader>f", leap_bi_o(2), mode = "o", desc = "Leap Inc" },
-      { "<leader>t", leap_bi_o(0), mode = "o", desc = "Leap Exc" },
+      { O.goto_prefix .. "f", "<Plug>(leap-forward-to)", mode = "x", desc = "Leap f" },
+      { O.goto_prefix .. "t", "<Plug>(leap-forward-till)", mode = "x", desc = "Leap t" },
+      { O.goto_prefix .. "F", "<Plug>(leap-backward-to)", mode = "x", desc = "Leap F" },
+      { O.goto_prefix .. "T", "<Plug>(leap-backward-till)", mode = "x", desc = "Leap T" },
+      -- { O.goto_prefix.."f", leap_bi_x(2), mode = "x", desc = "Leap Inc" },
+      -- { O.goto_prefix.."t", leap_bi_x(0), mode = "x", desc = "Leap Exc" },
+      { O.goto_prefix .. "f", leap_bi_o(2), mode = "o", desc = "Leap Inc" },
+      { O.goto_prefix .. "t", leap_bi_o(0), mode = "o", desc = "Leap Exc" },
+
+      {
+        "<Plug>(leap-remote)",
+        function()
+          require("leap.remote").action()
+        end,
+        desc = "Leap Remote",
+        mode = { "n", "o", "x" },
+      },
+      {
+        "<Plug>(leap-treesitter)",
+        function()
+          require("leap.treesitter").select()
+          -- local sk = vim.deepcopy(require("leap").opts.special_keys)
+          -- -- The items in `special_keys` can be both strings or tables - the
+          -- -- shortest workaround might be the below one:
+          -- sk.next_target = vim.fn.flatten(vim.list_extend({ O.select_dynamic }, { sk.next_target }))
+          -- sk.prev_target = vim.fn.flatten(vim.list_extend({ O.select_dynamic:upper() }, { sk.prev_target }))
+          -- require("leap.treesitter").select { opts = { special_keys = sk } }
+        end,
+        mode = { "n", "o", "x" },
+        desc = "Cursor Node",
+      },
+      {
+        "<Plug>(leap-treesitter-line)",
+        'V<cmd>lua require("leap.treesitter").select()<cr>',
+        mode = { "n", "o", "x" },
+        desc = "Cursor V Node",
+      },
     },
     -- TODO: unlazy me
     config = function()
       local leap = require("leap")
+      -- Highly recommended: define a preview filter to reduce visual noise
+      -- and the blinking effect after the first keypress
+      -- (see `:h leap.opts.preview`).
+      -- For example, skip preview if the first character of the match is
+      -- whitespace or is in the middle of an alphabetic word:
+      require("leap").opts.preview = function(ch0, ch1, ch2)
+        return not (ch1:match("%s") or (ch0:match("%a") and ch1:match("%a") and ch2:match("%a")))
+      end
       leap.opts.equivalence_classes = {
         " \t\r\n",
         "(){}[]b",
@@ -366,7 +416,10 @@ return {
             return
           end
           if type(args.and_then) == "string" then
-            utils.feedkeys(args.and_then, "m")
+            -- vim.schedule(function()
+            --   utils.feedkeys(args.and_then, "m")
+            -- end)
+            vim.cmd("normal! " .. args.and_then)
           else
             args:and_then()
           end

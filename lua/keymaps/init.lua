@@ -27,18 +27,18 @@ vim.keymap.localleader = vim.keymap.prefixedl("<localleader>")
 local mapl = vim.keymap.setl
 local map = vim.keymap.set
 
-local function op_from(lhs, rhs, opts)
+local function obj_from(lhs, rhs, opts)
   opts = opts or {}
   rhs = rhs or lhs
   map("o", lhs, "<cmd>normal v" .. rhs .. "<cr>", opts)
 end
 
-M.op_from = op_from
+M.obj_from = obj_from
 local function sel_map(lhs, rhs, opts)
   opts = opts or {}
 
   map("x", lhs, rhs, opts)
-  op_from(lhs, rhs, opts)
+  obj_from(lhs, rhs, opts)
 end
 
 M.sel_map = sel_map

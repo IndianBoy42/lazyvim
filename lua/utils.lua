@@ -27,13 +27,18 @@ function M.operatorfunc_helper_select(vmode)
   local end_row, end_col = unpack(vim.api.nvim_buf_get_mark(0, "]"))
 
   vim.fn.setpos(".", { 0, start_row, start_col + 1, 0 })
-  if type(vmode) == "string" then
-    vim.cmd("normal! " .. vim.keycode(vmode))
-  elseif vmode then
-    vim.cmd("normal! V")
-  else
-    vim.cmd("normal! v")
+
+  local mode = vim.fn.mode(1)
+  if mode:match("no?") then
+    if type(vmode) == "string" then
+      vim.cmd("normal! " .. vim.keycode(vmode))
+    elseif vmode then
+      vim.cmd("normal! V")
+    else
+      vim.cmd("normal! v")
+    end
   end
+
   if end_col == 1 then
     vim.fn.setpos(".", { 0, end_row - 1, -1, 0 })
   else

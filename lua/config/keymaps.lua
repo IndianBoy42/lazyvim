@@ -157,21 +157,21 @@ map("i", "<M-r>", "<esc><M-r>", { remap = true, desc = "Rename after" })
 
 -- Select last pasted
 -- TODO: use yanky
-map("x", "<leader>p", "`[o`]", { desc = "Select Last Paste/Op" })
-map("x", "<leader>P", "V`[o`]", { desc = "SelLine Last Paste/Op" })
-map("x", "<leader><C-p>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
-map("n", "<leader>p", "v`[o`]", { desc = "Select Last Paste/Op" })
-map("n", "<leader>P", "V`[o`]", { desc = "SelLine Last Paste/Op" })
-map("n", "<leader><C-p>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
+map("x", O.goto_prefix .. "p", "`[o`]", { desc = "Select Last Paste/Op" })
+map("x", O.goto_prefix .. "P", "V`[o`]", { desc = "SelLine Last Paste/Op" })
+map("x", O.goto_prefix .. "<C-p>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
+map("n", O.goto_prefix .. "p", "v`[o`]", { desc = "Select Last Paste/Op" })
+map("n", O.goto_prefix .. "P", "V`[o`]", { desc = "SelLine Last Paste/Op" })
+map("n", O.goto_prefix .. "<C-p>", "<C-v>`[o`]", { desc = "SelBlock Last Paste/Op" })
 -- Use reselect as an operator
-K.op_from("<leader>p")
-K.op_from("<leader>P")
-K.op_from("<leader><C-p>")
+K.obj_from(O.goto_prefix .. "p")
+K.obj_from(O.goto_prefix .. "P")
+K.obj_from(O.goto_prefix .. "<C-p>")
 
 -- `v` as an operator
--- map("n", "v", operatorfunc_keys "", { expr = true, desc = "v (op)" })
--- map("n", "V", operatorfunc_Vkeys "", { expr = true, desc = "V (op)" })
--- map("n", "<C-v>", operatorfunc_cvkeys "", { expr = true, desc = "<C-v> (op)" })
+map("n", O.goto_prefix .. "v", utils.operatorfunc_keys(""), { expr = true, desc = "v (op)" })
+map("n", O.goto_prefix .. "V", utils.operatorfunc_Vkeys(""), { expr = true, desc = "V (op)" })
+map("n", O.goto_prefix .. "<C-v>", utils.operatorfunc_cvkeys(""), { expr = true, desc = "<C-v> (op)" })
 -- -- TODO: make v[hjkl] more like normal
 -- Also needs an exception for remote mode
 
@@ -184,9 +184,9 @@ map("n", "g<C-v>", "'<C-v>'>", {})
 map("x", "g<C-v>", "<esc>g<C-v>", {})
 
 -- Use reselect as an operator
-K.op_from("gv")
-K.op_from("gV")
-K.op_from("g<C-v>")
+K.obj_from("gv")
+K.obj_from("gV")
+K.obj_from("g<C-v>")
 
 map({ "n", "x", "o" }, "<c-e>", "ge", {})
 map({ "n", "x", "o" }, "<c-s-e>", "gE", {})
@@ -239,8 +239,8 @@ quick_inside("W")
 -- quick_inside "B"
 -- quick_inside "["
 -- quick_around "]"
--- quick_inside "("
--- quick_around ")"
+quick_inside("(")
+quick_around(")")
 -- quick_inside "{"
 -- quick_around "}"
 -- quick_inside '"'

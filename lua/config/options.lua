@@ -51,6 +51,12 @@ opt.autowriteall = true
 opt.scrolloff = 10
 opt.sidescrolloff = 10
 
+-- LSP Server to use for Rust.
+-- Set to "bacon-ls" to use bacon-ls instead of rust-analyzer.
+-- only for diagnostics. The rest of LSP support will still be
+-- provided by rust-analyzer.
+vim.g.lazyvim_rust_diagnostics = "bacon-ls"
+
 cmd("set sessionoptions+=globals")
 cmd("set sessionoptions-=help")
 
@@ -68,6 +74,7 @@ vim.filetype.add({
     lbm = "lisp",
     mbt = "moonbit",
     mbti = "moonbit",
+    mdd = "mermaid",
   },
   filename = {
     Justfile = "just",
