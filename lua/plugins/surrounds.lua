@@ -37,7 +37,7 @@ end
 
 return {
   {
-    "mini.surround",
+    "nvim-mini/mini.surround",
     keys = function(_, keys)
       local mappings = {
         { O.surrounds.add, desc = "Add surrounding" },

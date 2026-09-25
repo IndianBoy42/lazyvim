@@ -137,7 +137,7 @@ local custom_textobjects = function(ai)
 end
 
 return {
-  "mini.ai",
+  "nvim-mini/mini.ai",
   dependencies = { "mini.extra" },
   opts = function(_, opts)
     local ai = require("mini.ai")

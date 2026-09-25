@@ -109,7 +109,7 @@ local function kitty_terms()
       Term.scroll(opts)
     end
   end
-  local vert_spd = require("keymappings.scroll_mode").vert_spd
+  local vert_spd = require("keymaps.scroll_mode").vert_spd
   local scroll_hydra = require("hydra")({
     name = "Scroll Terminal",
     hint = "",

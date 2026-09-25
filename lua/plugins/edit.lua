@@ -300,7 +300,7 @@ return { -- mizlan/iswap.nvim
     end,
   },
   {
-    "mini.move",
+    "nvim-mini/mini.move",
     main = "mini.move",
     keys = function()
       local keys = { "<M-h>", "<M-j>", "<M-k>", "<M-l>", "<C-M-h>", "<C-M-j>", "<C-M-k>", "<C-M-l>" }
@@ -370,7 +370,7 @@ return { -- mizlan/iswap.nvim
     -- end,
   },
   {
-    "mini.operators",
+    "nvim-mini/mini.operators",
     main = "mini.operators",
     opts = {
       -- Evaluate text and replace with output

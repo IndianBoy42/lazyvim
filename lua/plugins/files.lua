@@ -85,7 +85,7 @@ return {
     },
   },
   {
-    "mini.files",
+    "nvim-mini/mini.files",
     keys = {
       {
         "<leader>of",

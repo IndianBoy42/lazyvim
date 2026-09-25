@@ -76,33 +76,26 @@ local function as_ft(key_specific_args)
   return vim.tbl_deep_extend("keep", common_args, key_specific_args)
 end
 
-local clever = require("leap.user").with_traversal_keys -- [2]
-local clever_f = clever("f", "F")
-local clever_t = clever("t", "T")
-
 local leap_ft = function(k)
-  local opts = {
-    f = { opts = clever_f },
-    F = { backward = true, opts = clever_f },
-    t = { offset = -1, opts = clever_t },
-    T = { backward = true, offset = 1, opts = clever_t },
-  }
   return function()
+    local clever = require("leap.user").with_traversal_keys -- [2]
+
+    local clever_f = clever("f", "F")
+    local clever_t = clever("t", "T")
+
+    local opts = {
+      f = { opts = clever_f },
+      F = { backward = true, opts = clever_f },
+      t = { offset = -1, opts = clever_t },
+      T = { backward = true, offset = 1, opts = clever_t },
+    }
     require("leap").leap(as_ft(opts[k]))
   end
 end
 
 return {
   {
-    "https://codeberg.org/andyg/flit.nvim",
-    enabled = false,
-    opts = {
-      labeled_modes = "nx",
-      opts = { equivalence_classes = {} },
-    },
-  },
-  {
-    "https://codeberg.org/andyg/leap.nvim",
+    url = "https://codeberg.org/andyg/leap.nvim.git",
     keys = {
       { "f", leap_ft("f"), mode = { "n", "x", "o" } },
       { "F", leap_ft("f"), mode = { "n", "x", "o" } },
